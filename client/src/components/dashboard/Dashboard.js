@@ -24,12 +24,6 @@ const Dashboard = ({
   // Get active streaks
   const activeStreaks = streaks.filter(streak => streak.active);
 
-  // Get streaks with current streak > 0
-  const ongoingStreaks = activeStreaks.filter(streak => streak.currentStreak > 0);
-
-  // Get completed character traits
-  const completedCharacters = characters.filter(character => character.completed);
-
   return (
     <section className='container'>
       <h1 className='large text-primary'>Dashboard</h1>
