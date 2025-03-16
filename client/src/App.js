@@ -5,6 +5,7 @@ import store from './store';
 import { loadUser } from './actions/auth';
 import setAuthToken from './utils/setAuthToken';
 
+
 // Components
 import Navbar from './components/layout/Navbar';
 import Landing from './components/layout/Landing';
@@ -33,7 +34,7 @@ if (localStorage.token) {
   setAuthToken(localStorage.token);
 }
 
-const App = () => {
+function App() {
   useEffect(() => {
     store.dispatch(loadUser());
   }, []);
@@ -43,25 +44,27 @@ const App = () => {
       <Router>
         <div className="App">
           <Navbar />
-          <Alert />
-          <Routes>
-            <Route path="/" element={<Landing />} />
-            <Route path="/register" element={<Register />} />
-            <Route path="/login" element={<Login />} />
-            <Route path="/dashboard" element={<PrivateRoute component={Dashboard} />} />
-            <Route path="/create-profile" element={<PrivateRoute component={CreateProfile} />} />
-            <Route path="/edit-profile" element={<PrivateRoute component={EditProfile} />} />
-            <Route path="/streaks" element={<PrivateRoute component={Streaks} />} />
-            <Route path="/add-streak" element={<PrivateRoute component={StreakForm} />} />
-            <Route path="/streak/:id" element={<PrivateRoute component={StreakCheckIn} />} />
-            <Route path="/streak-details/:id" element={<PrivateRoute component={StreakDetails} />} />
-            <Route path="/reading" element={<PrivateRoute component={Reading} />} />
-            <Route path="/add-reading" element={<PrivateRoute component={ReadingForm} />} />
-            <Route path="/reading/:id" element={<PrivateRoute component={ReadingProgress} />} />
-            <Route path="/character" element={<PrivateRoute component={Character} />} />
-            <Route path="/add-character" element={<PrivateRoute component={CharacterForm} />} />
-            <Route path="/edit-character/:id" element={<PrivateRoute component={EditCharacter} />} />
-          </Routes>
+          <div className="container">
+            <Alert />
+            <Routes>
+              <Route path="/" element={<Landing />} />
+              <Route path="/register" element={<Register />} />
+              <Route path="/login" element={<Login />} />
+              <Route path="/dashboard" element={<PrivateRoute component={Dashboard} />} />
+              <Route path="/create-profile" element={<PrivateRoute component={CreateProfile} />} />
+              <Route path="/edit-profile" element={<PrivateRoute component={EditProfile} />} />
+              <Route path="/streaks" element={<PrivateRoute component={Streaks} />} />
+              <Route path="/add-streak" element={<PrivateRoute component={StreakForm} />} />
+              <Route path="/streak/:id" element={<PrivateRoute component={StreakCheckIn} />} />
+              <Route path="/streak-details/:id" element={<PrivateRoute component={StreakDetails} />} />
+              <Route path="/reading" element={<PrivateRoute component={Reading} />} />
+              <Route path="/add-reading" element={<PrivateRoute component={ReadingForm} />} />
+              <Route path="/reading/:id" element={<PrivateRoute component={ReadingProgress} />} />
+              <Route path="/character" element={<PrivateRoute component={Character} />} />
+              <Route path="/add-character" element={<PrivateRoute component={CharacterForm} />} />
+              <Route path="/edit-character/:id" element={<PrivateRoute component={EditCharacter} />} />
+            </Routes>
+          </div>
         </div>
       </Router>
     </Provider>

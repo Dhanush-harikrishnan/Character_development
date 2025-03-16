@@ -283,7 +283,7 @@ router.delete('/:id', auth, async (req, res) => {
       return res.status(401).json({ msg: 'User not authorized' });
     }
 
-    await streak.remove();
+    await Streak.findByIdAndDelete(req.params.id);
 
     res.json({ msg: 'Streak removed' });
   } catch (err) {

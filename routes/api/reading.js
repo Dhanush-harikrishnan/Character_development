@@ -182,4 +182,32 @@ router.put('/:id', auth, async (req, res) => {
   }
 });
 
+// @route   DELETE api/reading/:id
+// @desc    Delete reading entry
+// @access  Private
+router.delete('/:id', auth, async (req, res) => {
+  try {
+    const reading = await Reading.findById(req.params.id);
+
+    if (!reading) {
+      return res.status(404).json({ msg: 'Reading entry not found' });
+    }
+
+    // Check if reading belongs to user
+    if (reading.user.toString() !== req.user.id) {
+      return res.status(401).json({ msg: 'User not authorized' });
+    }
+
+    await Reading.findByIdAndDelete(req.params.id);
+
+    res.json({ msg: 'Reading entry removed' });
+  } catch (err) {
+    console.error(err.message);
+    if (err.kind === 'ObjectId') {
+      return res.status(404).json({ msg: 'Reading entry not found' });
+    }
+    res.status(500).send('Server Error');
+  }
+});
+
 module.exports = router;
