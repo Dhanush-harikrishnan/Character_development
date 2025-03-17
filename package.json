@@ -10,7 +10,7 @@
     "dev": "concurrently \"npm run server\" \"npm run client\"",
     "client-install": "npm install --prefix client",
     "build": "cd client && npm install && npm run build",
-    "postinstall": "npm run client-install"
+    "heroku-postbuild": "NPM_CONFIG_PRODUCTION=false npm install && npm install --prefix client && npm run build --prefix client"
   },
   "keywords": [
     "character development",
@@ -23,6 +23,7 @@
   "dependencies": {
     "bcryptjs": "^2.4.3",
     "character-development-app": "file:",
+    "concurrently": "^8.2.1",
     "config": "^3.3.9",
     "dotenv": "^16.4.7",
     "express": "^4.18.2",
@@ -33,7 +34,6 @@
     "react-icons": "^5.5.0"
   },
   "devDependencies": {
-    "concurrently": "^8.2.1",
     "nodemon": "^3.0.1"
   }
 }
