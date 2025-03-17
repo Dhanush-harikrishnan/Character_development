@@ -1,8 +1,0 @@
-{
-  "rewrites": [
-    {
-      "source": "/api/(.*)",
-      "destination": "https://character-development.vercel.app/api/$1"
-    }
-  ]
-}
