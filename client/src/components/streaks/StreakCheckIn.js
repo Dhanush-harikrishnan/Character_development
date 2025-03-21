@@ -15,10 +15,32 @@ const StreakCheckIn = ({
     completed: true,
     notes: ''
   });
+  const [submitting, setSubmitting] = useState(false);
 
   useEffect(() => {
     getStreakById(id);
   }, [getStreakById, id]);
+
+  // Check if already checked in today
+  useEffect(() => {
+    if (streak && streak.streakHistory && streak.streakHistory.length > 0) {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      
+      const todayEntry = streak.streakHistory.find(entry => {
+        const entryDate = new Date(entry.date);
+        entryDate.setHours(0, 0, 0, 0);
+        return entryDate.getTime() === today.getTime();
+      });
+      
+      if (todayEntry) {
+        setFormData({
+          completed: todayEntry.completed,
+          notes: todayEntry.notes || ''
+        });
+      }
+    }
+  }, [streak]);
 
   const { completed, notes } = formData;
 
@@ -32,11 +54,13 @@ const StreakCheckIn = ({
 
   const onSubmit = e => {
     e.preventDefault();
+    setSubmitting(true);
     
-    // Create check-in data
+    // Create check-in data with exact date to ensure accurate tracking
+    const now = new Date();
     const checkInData = {
       streakHistory: {
-        date: new Date(),
+        date: now.toISOString(),
         completed,
         notes
       }
@@ -89,7 +113,12 @@ const StreakCheckIn = ({
             </div>
             
             <div className='form-actions'>
-              <input type='submit' className='btn btn-primary' value='Submit Check-In' />
+              <input 
+                type='submit' 
+                className='btn btn-primary' 
+                value={submitting ? 'Submitting...' : 'Submit Check-In'} 
+                disabled={submitting}
+              />
               <Link className='btn btn-light' to='/streaks'>
                 Cancel
               </Link>

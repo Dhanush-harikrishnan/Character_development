@@ -124,13 +124,12 @@ const StreakDetails = ({ getStreakById, streak: { streak, loading } }) => {
           </div>
           
           <div className='streak-notes my-2'>
-            <h2 className='text-dark'>Recent Notes</h2>
+            <h2 className='text-dark'>All Notes</h2>
             {streak.streakHistory && streak.streakHistory.length > 0 ? (
               <div className='notes-list'>
                 {streak.streakHistory
                   .filter(entry => entry.notes && entry.notes.trim() !== '')
                   .sort((a, b) => new Date(b.date) - new Date(a.date))
-                  .slice(0, 5)
                   .map((entry, index) => (
                     <div key={index} className='note-card'>
                       <div className='note-date'>

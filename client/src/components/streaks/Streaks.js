@@ -53,9 +53,8 @@ const Streaks = ({ getStreaks, deleteStreak, streak: { streaks, loading } }) => 
     return days;
   };
 
-  // Calculate total active streaks and total streak days
+  // Calculate total active streaks
   const activeStreaks = streaks.filter(streak => streak.active);
-  const totalStreakDays = activeStreaks.reduce((total, streak) => total + streak.currentStreak, 0);
 
   return (
     <section className='container'>

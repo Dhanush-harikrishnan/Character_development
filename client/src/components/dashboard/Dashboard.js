@@ -89,6 +89,7 @@ const Dashboard = ({
             </div>
           </div>
           
+          {/* Main Dashboard Grid */}
           <div className='dashboard-grid'>
             {/* Streak Summary */}
             <div className='dashboard-card'>

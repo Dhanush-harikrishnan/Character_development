@@ -91,22 +91,55 @@ router.put('/:id', auth, async (req, res) => {
     const { streakHistory } = req.body;
     
     if (streakHistory) {
+      // Ensure we're using the correct date format
+      const checkInDate = new Date(streakHistory.date || Date.now());
+      checkInDate.setHours(0, 0, 0, 0);
+      
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       
       // Check if already checked in today
-      const todayEntry = streak.streakHistory.find(entry => {
+      const todayEntryIndex = streak.streakHistory.findIndex(entry => {
         const entryDate = new Date(entry.date);
         entryDate.setHours(0, 0, 0, 0);
         return entryDate.getTime() === today.getTime();
       });
       
-      if (todayEntry) {
+      if (todayEntryIndex !== -1) {
         // Update today's entry
-        todayEntry.completed = streakHistory.completed;
-        todayEntry.notes = streakHistory.notes;
+        streak.streakHistory[todayEntryIndex].completed = streakHistory.completed;
+        if (streakHistory.notes) {
+          streak.streakHistory[todayEntryIndex].notes = streakHistory.notes;
+        }
+        
+        // Recalculate current streak based on history
+        if (streakHistory.completed) {
+          // If today is now marked as completed, we may need to increase the streak
+          // First, check if yesterday was completed
+          const yesterday = new Date(today);
+          yesterday.setDate(yesterday.getDate() - 1);
+          
+          const yesterdayEntry = streak.streakHistory.find(entry => {
+            const entryDate = new Date(entry.date);
+            entryDate.setHours(0, 0, 0, 0);
+            return entryDate.getTime() === yesterday.getTime();
+          });
+          
+          if (yesterdayEntry && yesterdayEntry.completed) {
+            // If yesterday was completed and today is now completed, increment streak
+            if (!streak.streakHistory[todayEntryIndex].completed && streakHistory.completed) {
+              streak.currentStreak += 1;
+            }
+          } else if (streakHistory.completed) {
+            // If yesterday wasn't completed but today is, set streak to 1
+            streak.currentStreak = 1;
+          }
+        } else {
+          // If today is now marked as not completed, reset streak to 0
+          streak.currentStreak = 0;
+        }
       } else {
-        // Add new entry
+        // Add new entry for today
         streak.streakHistory.unshift({
           date: streakHistory.date || Date.now(),
           completed: streakHistory.completed,
@@ -121,15 +154,15 @@ router.put('/:id', auth, async (req, res) => {
           // If today's entry is completed, increment streak, otherwise reset to 0
           streak.currentStreak = streakHistory.completed ? streak.currentStreak + 1 : 0;
         }
-        
-        // Update longest streak if needed
-        if (streak.currentStreak > streak.longestStreak) {
-          streak.longestStreak = streak.currentStreak;
-        }
-        
-        // Update last checked in date
-        streak.lastCheckedIn = Date.now();
       }
+      
+      // Update longest streak if needed
+      if (streak.currentStreak > streak.longestStreak) {
+        streak.longestStreak = streak.currentStreak;
+      }
+      
+      // Update last checked in date
+      streak.lastCheckedIn = Date.now();
     }
     
     await streak.save();
